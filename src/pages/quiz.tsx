@@ -3,6 +3,7 @@ import QuestionComponent from "../components/question";
 import "./quiz.css";
 import { useState, useContext, useEffect } from "react";
 import { QuizContext } from "../Context";
+import formatTime from "../utils/formatTime";
 
 interface QuizQuestion {
   id: number;
@@ -20,11 +21,26 @@ const Quiz = () => {
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState(false);
 
+  const [remainingTime, setRemainingTime] = useState(60);
+
   useEffect(() => {
     if (questions.length > 0) {
       setCurrentQuestion(questions[slide]);
     }
   }, [questions, slide]);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (remainingTime > 0) {
+      interval = setInterval(() => {
+        setRemainingTime((prevTime) => prevTime - 1);
+      }, 1000);
+    } else {
+      setFinished(true);
+    }
+
+    return () => clearInterval(interval);
+  }, [remainingTime]);
 
   const handleGoToNext = () => {
     if (slide < questions.length - 1) {
@@ -44,6 +60,7 @@ const Quiz = () => {
     setSlide(0);
     setScore(0);
     setFinished(false);
+    setRemainingTime(60);
   };
 
   if (isLoading) {
@@ -66,11 +83,17 @@ const Quiz = () => {
     );
   }
 
+  const minutes = Math.floor(remainingTime / 60)
+    .toString()
+    .padStart(2, "0");
+  const seconds = (remainingTime % 60).toString().padStart(2, "0");
+  const remainingTimeFormatted = `${minutes}:${seconds}s`;
+
   return (
     <Grid className="text-center">
       <Grid className="d-flex space-between">
         <Typography variant="h6">Time remaining</Typography>
-        <Typography variant="h6">10:23s</Typography>
+        <Typography variant="h6">{formatTime(remainingTime)}</Typography>
       </Grid>
       {currentQuestion && (
         <QuestionComponent
