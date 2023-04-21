@@ -1,6 +1,6 @@
 import { Typography, Button } from "@mui/material";
 import Options from "./options";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 interface Option {
   id: string;
@@ -32,6 +32,10 @@ const QuestionComponent = ({
     goToNext(isCorrect);
   };
 
+  useEffect(() => {
+    setSelectedOption("");
+  }, [question]);
+
   return (
     <div className="m-auto w-96">
       <Typography variant="h5">{question}</Typography>
@@ -41,18 +45,18 @@ const QuestionComponent = ({
         selectedOption={selectedOption}
         onChange={(value: string) => {
           setSelectedOption(value);
-          onOptionSelect(value)
+          onOptionSelect(value);
         }}
         isAnswered={isAnswered}
         correctAnswer={correctAnswer}
       />
       <Button
-        className="my-button"
+        className={`my-button ${!selectedOption && "disabled-btn"}`}
         disabled={!selectedOption}
         variant="text"
         onClick={handleAnswer}
       >
-        {isAnswered ? "Next" : "Submit"}
+        {"Next"}
       </Button>
     </div>
   );
