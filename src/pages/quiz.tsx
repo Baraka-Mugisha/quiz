@@ -1,9 +1,10 @@
-import { Grid, Typography } from "@mui/material";
+import { Grid, Typography, Button } from "@mui/material";
 import QuestionComponent from "../components/question";
 import "./quiz.css";
 import { useState, useContext, useEffect } from "react";
 import { QuizContext } from "../Context";
 import formatTime from "../utils/formatTime";
+import Spacer from "../components/spacer";
 
 interface QuizQuestion {
   id: number;
@@ -21,7 +22,7 @@ const Quiz = () => {
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState(false);
 
-  const [remainingTime, setRemainingTime] = useState(60);
+  const [remainingTime, setRemainingTime] = useState(3600);
 
   useEffect(() => {
     if (questions.length > 0) {
@@ -73,12 +74,15 @@ const Quiz = () => {
 
   if (finished) {
     return (
-      <Grid className="text-center">
+      <Grid className="text-center pt-32">
         <Typography variant="h5">
           You have finished the quiz! Your score is {score} out of{" "}
           {questions.length}.
         </Typography>
-        <button onClick={handleRestart}>Restart</button>
+        <Spacer vertical={30} />
+        <Button className={`my-button`} variant="text" onClick={handleRestart}>
+          {"Restart"}
+        </Button>
       </Grid>
     );
   }
@@ -89,12 +93,47 @@ const Quiz = () => {
   const seconds = (remainingTime % 60).toString().padStart(2, "0");
   const remainingTimeFormatted = `${minutes}:${seconds}s`;
 
+  console.log(slide);
   return (
-    <Grid className="text-center">
-      <Grid className="d-flex space-between">
-        <Typography variant="h6">Time remaining</Typography>
-        <Typography variant="h6">{formatTime(remainingTime)}</Typography>
-      </Grid>
+    <Grid className="pt-16 text-center">
+      <div
+        className="flex space-between flex-col w-min m-auto mb-12"
+        style={{ gap: "1rem" }}
+      >
+        <div className="timer flex justify-around">
+          <Typography variant="h6">Time remaining</Typography>
+          <Typography
+            variant="h6"
+            color={(remainingTime < 30 && "#DC1B1B") || "#6BE4FF"}
+          >
+            {formatTime(remainingTime)}
+          </Typography>
+        </div>
+
+        <div
+          className="justify-center items-center flex mb-9"
+          style={{ gap: "2rem" }}
+        >
+          <span>{questions.findIndex((v, i) => i === slide)}</span>
+          <div className="flex" style={{ gap: "1rem" }}>
+            {[...Array(5).keys()].map((v, i) => (
+              <span
+                style={{
+                  width: "70px",
+                  height: "6px",
+                  background:
+                    (slide - 1 > i * Math.ceil(questions.length / 5) &&
+                      "#6BE4FF") ||
+                    "#D9D9D9",
+                  borderRadius: "8px",
+                  display: "block",
+                }}
+              ></span>
+            ))}
+          </div>
+          <span>{questions?.length! ?? 0}</span>
+        </div>
+      </div>
       {currentQuestion && (
         <QuestionComponent
           question={currentQuestion.question}

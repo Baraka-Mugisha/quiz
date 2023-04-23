@@ -25,7 +25,7 @@ const Options = ({
   return (
     <RadioGroup
       value={selectedOption}
-      className={className}
+      className={className+ " w-max"}
       onChange={(event) => onChange(event.target.value)}
     >
       {options.map((option) => (
@@ -36,12 +36,21 @@ const Options = ({
             <Radio
               sx={{
                 color: "white !important",
+                "& .MuiSvgIcon-root": {
+                  fontSize: "32px",
+                },
+                "&.Mui-checked .MuiSvgIcon-root": {
+                  color: "#6BE4FF", // Change the color of the radio icon when checked
+                },
               }}
             />
           }
           sx={{
-            fontWeight: 400,
-            fontSize: "24px !important"
+            gap: "20px",
+            width: 'fit-content',
+            "& .MuiFormControlLabel-label": {
+              fontSize: "24px",
+            },
           }}
           label={option.label}
         />
