@@ -37,8 +37,8 @@ const QuestionComponent = ({
   }, [question]);
 
   return (
-    <div className="m-auto w-96">
-      <Typography variant="h5">{question}</Typography>
+    <div className="m-auto w-96 flex flex-col items-center" style={{ gap: "3.5rem" }}>
+      <Typography variant="h4">{question}</Typography>
       <Options
         className="text-center m-auto"
         options={options}
